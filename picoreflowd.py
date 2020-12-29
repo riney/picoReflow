@@ -7,7 +7,7 @@ import json
 
 import bottle
 import gevent
-import geventwebsocket
+from geventwebsocket import WebSocketError
 from gevent.pywsgi import WSGIServer
 from geventwebsocket.handler import WebSocketHandler
 
@@ -51,7 +51,7 @@ def get_websocket_from_request():
     env = bottle.request.environ
     wsock = env.get('wsgi.websocket')
     if not wsock:
-        abort(400, 'Expected WebSocket request.')
+        os.abort(400, 'Expected WebSocket request.')
     return wsock
 
 
