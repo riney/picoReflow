@@ -255,6 +255,10 @@ class TempSensorReal(TempSensor):
             log.info("init MAX31855-spi")
             self.thermocouple = MAX31855SPI(spi_dev=SPI.SpiDev(port=0, device=config.spi_sensor_chip_id))
 
+        if config.mcp9600:
+            log.info("init MCP9600")
+            self.thermocouple = MCP9600(config.i2c_frequency)
+
     def run(self):
         while True:
             try:
