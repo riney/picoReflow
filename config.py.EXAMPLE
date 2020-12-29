@@ -39,9 +39,11 @@ gpio_door = 18
 #   max31855 - bitbang SPI interface
 #   max31855spi - kernel SPI interface
 #   max6675 - bitbang SPI interface
+#   mcp9600 - kernel I2C interface
 max31855 = 1
 max6675 = 0
 max31855spi = 0 # if you use this one, you MUST reassign the default GPIO pins
+mcp9600 = 0
 
 ### Thermocouple Connection (using bitbang interfaces)
 gpio_sensor_cs = 27
@@ -50,6 +52,9 @@ gpio_sensor_data = 17
 
 ### Thermocouple SPI Connection (using adafrut drivers + kernel SPI interface)
 spi_sensor_chip_id = 0
+
+### I2C bus frequency
+i2c_frequency = 100000
 
 ### amount of time, in seconds, to wait between reads of the thermocouple
 sensor_time_wait = .5

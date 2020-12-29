@@ -10,7 +10,7 @@ import config
 log = logging.getLogger(__name__)
 
 try:
-    if config.max31855 + config.max6675 + config.max31855spi > 1:
+    if config.max31855 + config.max6675 + config.max31855spi + config.mcp9600 > 1:
         log.error("choose (only) one converter IC")
         exit()
     if config.max31855:
@@ -32,10 +32,15 @@ try:
     if config.max6675:
         from max6675 import MAX6675, MAX6675Error
         log.info("import MAX6675")
+    if config.mcp9600:
+        from mcp9600 import MCP9600, MCP9600Error
+        log.info("import MCP9600")        
     sensor_available = True
 except ImportError:
     log.exception("Could not initialize temperature sensor, using dummy values!")
     sensor_available = False
+
+breakpoint()
 
 try:
     import RPi.GPIO as GPIO
