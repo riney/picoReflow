@@ -16,6 +16,11 @@ listening_port = 8081
 kwh_rate        = 0.26  # Rate in currency_type to calculate cost to run job
 currency_type   = "EUR"   # Currency Symbol to show when calculating cost to run job
 
+### Feature flags
+use_cool = 1
+use_air = 1
+use_door = 1
+
 ########################################################################
 #
 #   GPIO Setup (BCM SoC Numbering Schema)
