@@ -1,0 +1,15 @@
+riney's fork of picoReflow
+==========================
+
+* Add support for MCP9600 thermocouple amplifier
+  - python library: adafruit-circuitpython-mcp9600
+
+* Add support for running a command line to turn on/off toaster oven instead
+  of toggling a GPIO pin
+  - add a config.py option for using either GPIO or cmdline exec to toggle heat
+  - ... and we'll need an option for what those command lines are (on and off)
+
+* Make use of door switch optional
+* Make use of gpio_cool optional
+* Make use of gpio_air optional
+
