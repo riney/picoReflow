@@ -10,7 +10,7 @@ import config
 log = logging.getLogger(__name__)
 
 try:
-    if config.max31855 + config.max6675 + config.max31855spi > 1:
+    if config.max31855 + config.max6675 + config.max31855spi + config.mcp9600 > 1:
         log.error("choose (only) one converter IC")
         exit()
     if config.max31855:
@@ -32,6 +32,9 @@ try:
     if config.max6675:
         from max6675 import MAX6675, MAX6675Error
         log.info("import MAX6675")
+    if config.mcp9600:
+        from mcp9600 import MCP9600, MCP9600Error
+        log.info("import MCP9600")        
     sensor_available = True
 except ImportError:
     log.exception("Could not initialize temperature sensor, using dummy values!")
@@ -249,6 +252,10 @@ class TempSensorReal(TempSensor):
         if config.max31855spi:
             log.info("init MAX31855-spi")
             self.thermocouple = MAX31855SPI(spi_dev=SPI.SpiDev(port=0, device=config.spi_sensor_chip_id))
+
+        if config.mcp9600:
+            log.info("init MCP9600")
+            self.thermocouple = MCP9600(config.i2c_frequency)
 
     def run(self):
         while True:
