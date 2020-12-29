@@ -40,8 +40,6 @@ except ImportError:
     log.exception("Could not initialize temperature sensor, using dummy values!")
     sensor_available = False
 
-breakpoint()
-
 try:
     import RPi.GPIO as GPIO
     GPIO.setmode(GPIO.BCM)
