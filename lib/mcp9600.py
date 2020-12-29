@@ -11,7 +11,7 @@ class MCP9600(object):
 
     '''
     def __init__(self, frequency=100000):
-        i2c = busio.I2C(board.SCL, board.SCL, frequency)
+        i2c = busio.I2C(board.SCL, board.SDA, frequency)
         self.mcp9600 = adafruit_mcp9600.MCP9600(i2c)
         self.log = logging.getLogger(__name__)
 
