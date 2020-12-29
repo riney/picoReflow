@@ -210,8 +210,8 @@ class Oven (threading.Thread):
                 if gpio_available:
                     GPIO.output(config.gpio_air, GPIO.HIGH)
         else:
-            self.cool = 0.0
-            
+            self.air = 0.0
+
     def get_state(self):
         state = {
             'runtime': self.runtime,
