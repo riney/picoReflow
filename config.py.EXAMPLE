@@ -21,6 +21,9 @@ use_cool = 1
 use_air = 1
 use_door = 1
 
+### How to switch on the heat. Valid options are "gpio" and "commandline"
+heat_method = "gpio"
+
 ########################################################################
 #
 #   GPIO Setup (BCM SoC Numbering Schema)
@@ -64,6 +67,16 @@ i2c_frequency = 100000
 ### amount of time, in seconds, to wait between reads of the thermocouple
 sensor_time_wait = .5
 
+########################################################################
+#
+#   Commandline parameters
+#
+#   This section is configured if heat_method is set to "commandline"
+#   above. This is done if you want to run a program on the command-line
+#   to switch the heat on and off.
+
+commandline_on = "usbrelay 3D0V2_1=1"
+commandline_off = "usbrelay 3D0V2_1=0"
 
 ########################################################################
 #

@@ -1,9 +1,10 @@
-import threading
-import time
-import random
 import datetime
 import logging
 import json
+import os
+import random
+import threading
+import time
 
 import config
 
@@ -40,11 +41,25 @@ except ImportError:
     log.exception("Could not initialize temperature sensor, using dummy values!")
     sensor_available = False
 
+# Check heat_method related config parameters.
+if config.heat_method not in ["gpio", "commandline"]:
+    log.error("Heat method must be either \"gpio\" or \"commandline\"")
+    exit()
+
+if config.heat_method == "commandline":
+    if not config.commandline_on:
+        log.error("Please specify a value for commandline_on in config.py.")
+        exit()        
+    if not config.commandline_off:
+        log.error("Please specify a value for commandline_off in config.py.")
+        exit()
+
 try:
     import RPi.GPIO as GPIO
     GPIO.setmode(GPIO.BCM)
     GPIO.setwarnings(False)
-    GPIO.setup(config.gpio_heat, GPIO.OUT)
+    if config.heat_method == "gpio":
+        GPIO.setup(config.gpio_heat, GPIO.OUT)
     if config.use_cool:
         GPIO.setup(config.gpio_cool, GPIO.OUT)
     if config.use_air:
@@ -169,22 +184,48 @@ class Oven (threading.Thread):
     def set_heat(self, value):
         if value > 0:
             self.heat = 1.0
-            if gpio_available:
-               if config.heater_invert:
-                 GPIO.output(config.gpio_heat, GPIO.LOW)
-                 time.sleep(self.time_step * value)
-                 GPIO.output(config.gpio_heat, GPIO.HIGH)   
-               else:
-                 GPIO.output(config.gpio_heat, GPIO.HIGH)
-                 time.sleep(self.time_step * value)
-                 GPIO.output(config.gpio_heat, GPIO.LOW)   
+            if config.heat_method == "gpio":
+                self.heat_on_gpio(value)
+            elif config.heat_method == "commandline":
+                self.heat_on_commandline(value)
         else:
             self.heat = 0.0
-            if gpio_available:
-               if config.heater_invert:
-                 GPIO.output(config.gpio_heat, GPIO.HIGH)
-               else:
-                 GPIO.output(config.gpio_heat, GPIO.LOW)
+            if config.heat_method == "gpio":
+                self.heat_off_gpio()
+            elif config.heat_method == "commandline":
+                self.heat_off_commandline()
+
+    def heat_on_gpio(self, value):
+        if gpio_available:
+            if config.heater_invert:
+                GPIO.output(config.gpio_heat, GPIO.LOW)
+                time.sleep(self.time_step * value)
+                GPIO.output(config.gpio_heat, GPIO.HIGH)   
+            else:
+                GPIO.output(config.gpio_heat, GPIO.HIGH)
+                time.sleep(self.time_step * value)
+                GPIO.output(config.gpio_heat, GPIO.LOW)   
+
+    def heat_off_gpio(self):
+        if gpio_available:
+            if config.heater_invert:
+                GPIO.output(config.gpio_heat, GPIO.HIGH)
+            else:
+                GPIO.output(config.gpio_heat, GPIO.LOW)
+
+    def heat_on_commandline(self, value):
+        if os.system(config.commandline_on) is not 0:
+            log("Heat on command failed")
+            exit()
+        time.sleep(self.time_step * value)
+        if os.system(config.commandline_off) is not 0:
+            log("Heat off command failed")
+            exit()
+
+    def heat_off_commandline(self):
+        if os.system(config.commandline_off) is not 0:
+            log("Heat off command failed")
+            exit()
 
     def set_cool(self, value):
         if config.use_cool:
