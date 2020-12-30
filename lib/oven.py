@@ -42,7 +42,7 @@ except ImportError:
     sensor_available = False
 
 # Check heat_method related config parameters.
-if config.heat_method not in ["gpio", "commandline"]:
+if not config.heat_method or config.heat_method not in ["gpio", "commandline"]:
     log.error("Heat method must be either \"gpio\" or \"commandline\"")
     exit()
 
@@ -52,7 +52,7 @@ if config.heat_method == "commandline":
         exit()        
     if not config.commandline_off:
         log.error("Please specify a value for commandline_off in config.py.")
-        exit()
+        exit()        
 
 try:
     import RPi.GPIO as GPIO
