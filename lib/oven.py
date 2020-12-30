@@ -42,7 +42,7 @@ except ImportError:
     sensor_available = False
 
 # Check heat_method related config parameters.
-if not config.heat_method or config.heat_method not in ["gpio", "commandline"]:
+if not hasattr(config, "heat_method") or config.heat_method not in ["gpio", "commandline"]:
     log.error("Heat method must be either \"gpio\" or \"commandline\"")
     exit()
 
